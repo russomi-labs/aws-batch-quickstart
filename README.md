@@ -1,24 +1,29 @@
-# Foobar
+# AWS Batch Quickstart
 
-Foobar is a Python library for dealing with word pluralization.
+An AWS Batch Quickstart repo to deploy the infrastructure required to run AWS Batch Jobs.
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+- TODO
 
-``` bash
-pip install foobar
+### GitHub Access Token
+
+We will need a GitHub access token to let CodeBuild pull changes from GitHub. To generate an access token, go to <https://github.com/settings/tokens/new> and click Generate new token.
+
+Give it `repo` and `admin:repo_hook` permissions, and click Generate token.
+
+Tokens and passwords are sensitive information and should not be checked into source repositories. There are sophisticated ways to store them, but for now we will put our new token in a local file that we can later read into an environment variable.
+
+``` BASH
+mkdir -p ~/.github/aws-batch-quickstart
+echo "aws-batch-quickstart" > ~/.github/aws-batch-quickstart/repo
+echo "russomi-labs" > ~/.github/aws-batch-quickstart/owner
+echo "<token>" > ~/.github/aws-batch-quickstart/access-token
 ```
 
 ## Usage
 
-``` python
-import foobar
-
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
-```
+- TODO
 
 ## Contributing
 
