@@ -25,16 +25,16 @@ echo "<token>" > ~/.github/aws-batch-quickstart/access-token
 
 ``` BASH
 cd src
-
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 673839138862.dkr.ecr.us-east-1.amazonaws.com
-
 docker build -t batch_processor .
-docker tag batch_processor 673839138862.dkr.ecr.us-east-1.amazonaws.com/batch-processing-job-repository
-docker push 673839138862.dkr.ecr.us-east-1.amazonaws.com/batch-processing-job-repository
+docker tag batch-processing-job-repository:latest 673839138862.dkr.ecr.us-east-1.amazonaws.com/batch-processing-job-repository:latest
+docker push 673839138862.dkr.ecr.us-east-1.amazonaws.com/batch-processing-job-repository:latest
 
 ```
 
 - [get-login-password](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ecr/get-login-password.html) - To log in to an Amazon ECR registry
+- https://aws.amazon.com/blogs/devops/build-a-continuous-delivery-pipeline-for-your-container-images-with-amazon-ecr-as-source/
+- https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html
 
 ## Usage
 

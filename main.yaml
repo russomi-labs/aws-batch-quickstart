@@ -1,9 +1,8 @@
 ---
-AWSTemplateFormatVersion: "2010-09-09"
-Description: "Orchestrating an Application Process with AWS Batch using CloudFormation"
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Orchestrating an Application Process with AWS Batch using CloudFormation'
 
 Parameters:
-
   RepositoryName:
     Type: String
     Description: 'The name of the ECR Repository.'
@@ -13,28 +12,28 @@ Parameters:
     Type: List<AWS::EC2::SecurityGroup::Id>
   CodePipelineBucket:
     Type: String
-    Description: "The S3 bucket for CodePipeline artifacts."
+    Description: 'The S3 bucket for CodePipeline artifacts.'
   GitHubOwner:
     Type: String
-    Description: "The username of the source GitHub repo."
+    Description: 'The username of the source GitHub repo.'
   GitHubRepo:
     Type: String
-    Description: "The source GitHub repo name (without the username)."
+    Description: 'The source GitHub repo name (without the username).'
   GitHubBranch:
     Type: String
     Default: master
-    Description: "The source GitHub branch."
+    Description: 'The source GitHub branch.'
   GitHubPersonalAccessToken:
     Type: String
     NoEcho: true
-    Description: 'A GitHub personal access token with "repo" and "admin:repo_hook" permissions.'
+    Description: 'A GitHub personal access token with 'repo' and 'admin:repo_hook' permissions.'
 
 Resources:
   DeploymentRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           Effect: Allow
           Principal:
@@ -70,6 +69,7 @@ Resources:
             Type: PLAINTEXT
             Value: !Ref RepositoryName
       Source:
+        BuildSpec: buildspec.yml
         Type: CODEPIPELINE
 
   Pipeline:
@@ -87,7 +87,7 @@ Resources:
               ActionTypeId:
                 Category: Source
                 Owner: ThirdParty
-                Version: "1"
+                Version: '1'
                 Provider: GitHub
               OutputArtifacts:
                 - Name: Source
@@ -104,7 +104,7 @@ Resources:
               ActionTypeId:
                 Category: Build
                 Owner: AWS
-                Version: "1"
+                Version: '1'
                 Provider: CodeBuild
               InputArtifacts:
                 - Name: Source
@@ -122,10 +122,10 @@ Resources:
         SecretToken: !Ref GitHubPersonalAccessToken
       Filters:
         - JsonPath: $.ref
-          MatchEquals: "refs/heads/{Branch}"
+          MatchEquals: 'refs/heads/{Branch}'
       TargetPipeline: !Ref Pipeline
       TargetAction: Source
-      Name: !Sub "Webhook-${AWS::StackName}"
+      Name: !Sub 'Webhook-${AWS::StackName}'
       TargetPipelineVersion: !GetAtt Pipeline.Version
       RegisterWithThirdParty: true
 
@@ -136,7 +136,7 @@ Resources:
     Properties:
       RepositoryName: !Sub ${RepositoryName}
       RepositoryPolicyText:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Sid: AllowPushPull
             Effect: Allow
@@ -144,19 +144,19 @@ Resources:
               AWS:
                 - !Sub arn:aws:iam::${AWS::AccountId}:role/${EcsInstanceRole}
             Action:
-              - "ecr:GetDownloadUrlForLayer"
-              - "ecr:BatchGetImage"
-              - "ecr:BatchCheckLayerAvailability"
-              - "ecr:PutImage"
-              - "ecr:InitiateLayerUpload"
-              - "ecr:UploadLayerPart"
-              - "ecr:CompleteLayerUpload"
+              - 'ecr:GetDownloadUrlForLayer'
+              - 'ecr:BatchGetImage'
+              - 'ecr:BatchCheckLayerAvailability'
+              - 'ecr:PutImage'
+              - 'ecr:InitiateLayerUpload'
+              - 'ecr:UploadLayerPart'
+              - 'ecr:CompleteLayerUpload'
 
   BatchServiceRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
@@ -175,9 +175,9 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2008-10-17"
+        Version: '2008-10-17'
         Statement:
-          - Sid: ""
+          - Sid: ''
             Effect: Allow
             Principal:
               Service: ec2.amazonaws.com
