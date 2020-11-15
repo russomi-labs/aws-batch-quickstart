@@ -25,7 +25,7 @@ aws cloudformation deploy \
   --region $REGION \
   --profile $CLI_PROFILE \
   --stack-name $STACK_NAME-setup \
-  --template-file setup.yaml \
+  --template-file templates/setup.yaml \
   --no-fail-on-empty-changeset \
   --capabilities CAPABILITY_NAMED_IAM \
   --parameter-overrides \
@@ -39,7 +39,7 @@ mkdir -p ./cfn_output
 PACKAGE_ERR="$(aws cloudformation package \
   --region $REGION \
   --profile $CLI_PROFILE \
-  --template main.yaml \
+  --template templates/main.yaml \
   --s3-bucket $CFN_BUCKET \
   --output-template-file ./cfn_output/main.yaml 2>&1)"
 
