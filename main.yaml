@@ -4,14 +4,13 @@ Description: "Orchestrating an Application Process with AWS Batch using CloudFor
 
 Parameters:
 
+  RepositoryName:
+    Type: String
+    Description: 'The name of the ECR Repository.'
   Subnets:
     Type: List<AWS::EC2::Subnet::Id>
-    Default: subnet-02e4835df727d512d,subnet-0830c53ec19d9e77d
-
   SecurityGroupIds:
     Type: List<AWS::EC2::SecurityGroup::Id>
-    Default: sg-028f8e6feb32d8433
-
   CodePipelineBucket:
     Type: String
     Description: "The S3 bucket for CodePipeline artifacts."
@@ -69,7 +68,7 @@ Resources:
             Value: !Ref AWS::AccountId
           - Name: IMAGE_REPO_NAME
             Type: PLAINTEXT
-            Value: 'batch-processing-job-repository'  # TODO: Create parameter
+            Value: !Ref RepositoryName
       Source:
         Type: CODEPIPELINE
 
@@ -126,7 +125,7 @@ Resources:
           MatchEquals: "refs/heads/{Branch}"
       TargetPipeline: !Ref Pipeline
       TargetAction: Source
-      Name: !Sub "webhook-${AWS::StackName}"
+      Name: !Sub "Webhook-${AWS::StackName}"
       TargetPipelineVersion: !GetAtt Pipeline.Version
       RegisterWithThirdParty: true
 
@@ -135,7 +134,7 @@ Resources:
   BatchProcessRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: "batch-processing-job-repository"
+      RepositoryName: !Sub ${RepositoryName}
       RepositoryPolicyText:
         Version: "2012-10-17"
         Statement:
@@ -186,7 +185,6 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
-        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 
   BatchProcessingJobDefinition:
     Type: AWS::Batch::JobDefinition
@@ -194,13 +192,7 @@ Resources:
       Type: container
       JobDefinitionName: BatchJobDefinition
       ContainerProperties:
-        Image:
-          Fn::Join:
-            - ""
-            - - Ref: AWS::AccountId
-              - .dkr.ecr.
-              - Ref: AWS::Region
-              - ".amazonaws.com/batch-processing-job-repository:latest"
+        Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${RepositoryName}:latest
         Vcpus: 2
         Memory: 2000
         Command:
