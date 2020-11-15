@@ -4,8 +4,8 @@ STACK_NAME=aws-batch-quickstart
 REGION=us-east-1
 CLI_PROFILE=aws-homesite-home-sandbox-acct
 
-AWS_ACCOUNT_ID=`aws sts get-caller-identity --profile $CLI_PROFILE \
-        --query "Account" --output text`
+AWS_ACCOUNT_ID=`aws sts get-caller-identity \
+        --query "Account" --output text --profile $CLI_PROFILE`
 
 CODEPIPELINE_BUCKET="$STACK_NAME-$REGION-codepipeline-$AWS_ACCOUNT_ID"
 
