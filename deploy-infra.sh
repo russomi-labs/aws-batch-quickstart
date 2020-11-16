@@ -1,13 +1,8 @@
 #!/bin/bash
 
-STACK_NAME=aws-batch-quickstart
-REGION=us-east-1
-CLI_PROFILE=aws-homesite-home-sandbox-acct
-
-AWS_ACCOUNT_ID=$(aws sts get-caller-identity \
-  --query "Account" --output text --profile $CLI_PROFILE)
-CODEPIPELINE_BUCKET="$STACK_NAME-$REGION-codepipeline-$AWS_ACCOUNT_ID"
-CFN_BUCKET="$STACK_NAME-cfn-$AWS_ACCOUNT_ID"
+STACK_NAME="aws-batch-quickstart"
+REGION="us-east-1"
+CLI_PROFILE="aws-homesite-home-sandbox-acct"
 SUBNETS="subnet-02e4835df727d512d,subnet-0830c53ec19d9e77d"
 SECURITY_GROUP_IDS="sg-028f8e6feb32d8433"
 IMAGE_REPO_NAME="batch-processing-job-repository"
@@ -18,6 +13,12 @@ GH_ACCESS_TOKEN=$(cat ~/.github/aws-batch-quickstart/access-token)
 GH_OWNER=$(cat ~/.github/aws-batch-quickstart/owner)
 GH_REPO=$(cat ~/.github/aws-batch-quickstart/repo)
 GH_BRANCH=master
+
+# Dynamic parameters
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity \
+  --query "Account" --output text --profile $CLI_PROFILE)
+CODEPIPELINE_BUCKET="$STACK_NAME-$REGION-codepipeline-$AWS_ACCOUNT_ID"
+CFN_BUCKET="$STACK_NAME-cfn-$AWS_ACCOUNT_ID"
 
 # Deploys static resources
 echo -e "\n\n=========== Deploying setup.yml ==========="
@@ -72,6 +73,5 @@ aws cloudformation deploy \
 if [ $? -eq 0 ]; then
   echo -e "Deploy Succeeded."
   # aws cloudformation list-exports \
-  #   --profile awsbootstrap \
   #   --query "Exports[?ends_with(Name,'LBEndpoint')].Value"
 fi
